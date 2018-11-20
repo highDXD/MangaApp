@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 
 public class TelaTituloSelecionado extends AppCompatActivity {
+
+    @BindView(R.id.lbl_total_de_volumes_cadastrados)
+    TextView lbl_total;
 
     @BindView(R.id.fab_add)
     FloatingActionButton fab_add;
@@ -91,7 +95,12 @@ public class TelaTituloSelecionado extends AppCompatActivity {
 
 
     private void populaTela() {
-        Log.e("VOLUMES", volumes.toString());
+        int qtdeDeVolumesCadastrados = volumeRepository.contarVolumesCadastrados(titulo.getId());
+
+        if (titulo.getNumTotalDeVolumes() == 0)
+            lbl_total.setText("Volumes: " + qtdeDeVolumesCadastrados + "/??");
+        else
+            lbl_total.setText("Volumes: " + qtdeDeVolumesCadastrados + "/" + titulo.getNumTotalDeVolumes());
 
         VolumeListAdapter adapter = new VolumeListAdapter(this, this, volumes);
         list_volumes.setAdapter(adapter);

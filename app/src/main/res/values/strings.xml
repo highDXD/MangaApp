@@ -20,13 +20,6 @@
     <string name="lbl_caracteristicas">Dados do título</string>
     <string name="hint_txt_pesquisa_volume">Número do volume</string>
 
-    <array name="qtde_volumes">
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
-        <item>25</item>
-    </array>
-
     <array name="tipos_de_titulo">
         <item>HQ</item>
         <item>Mangá</item>
