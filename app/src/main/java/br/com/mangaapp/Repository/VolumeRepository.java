@@ -37,6 +37,16 @@ public class VolumeRepository {
         }
     }
 
+    public boolean deletarLista(List<Volume> volumes) {
+        try {
+            return new DeletarLista().execute(volumes).get();
+        } catch (Exception e) {
+            Log.e("ERRO REPO VOLUME", e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean atualizar(Volume volume) {
         try {
             return new Atualizar().execute(volume).get();
@@ -67,6 +77,15 @@ public class VolumeRepository {
         }
     }
 
+    public List<Volume> listarUltimos(int qtde) {
+        try {
+            return new ListarUltimos().execute(qtde).get();
+        } catch (Exception e) {
+            Log.e("ERRO REPO VOLUME", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
     private class Salvar extends AsyncTask<Volume, Void, Boolean> {
 
         @Override
@@ -88,6 +107,22 @@ public class VolumeRepository {
         protected Boolean doInBackground(Volume... volumes) {
             try {
                 AppDatabase.getAppDatabase(context).volumeDao().deletar(volumes[0]);
+                return true;
+            } catch (Exception e) {
+                Log.e("ERRO ASYNC VOLUME", e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
+    private class DeletarLista extends AsyncTask<List<Volume>, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(List<Volume>... lists) {
+            List<Volume> volumes = lists[0];
+            try {
+                AppDatabase.getAppDatabase(context).volumeDao().deletarLista(volumes);
                 return true;
             } catch (Exception e) {
                 Log.e("ERRO ASYNC VOLUME", e.getMessage());
@@ -138,6 +173,20 @@ public class VolumeRepository {
         protected List<Volume> doInBackground(Long... longs) {
             try {
                 return AppDatabase.getAppDatabase(context).volumeDao().getAllFromTitulo(longs[0]);
+            } catch (Exception e) {
+                Log.e("ERRO ASYNC VOLUME", e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private class ListarUltimos extends AsyncTask<Integer, Void, List<Volume>> {
+
+        @Override
+        protected List<Volume> doInBackground(Integer... ints) {
+            try {
+                return AppDatabase.getAppDatabase(context).volumeDao().getUltimos(ints[0]);
             } catch (Exception e) {
                 Log.e("ERRO ASYNC VOLUME", e.getMessage());
                 e.printStackTrace();

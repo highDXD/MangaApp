@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,8 +28,8 @@ import br.com.mangaapp.Repository.TituloRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
-import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 
 public class TelaTitulos extends AppCompatActivity {
@@ -67,7 +66,7 @@ public class TelaTitulos extends AppCompatActivity {
 
         try {
             editora = (Editora) getIntent().getSerializableExtra("editora");
-        } catch (Exception e) {
+        }catch (Exception e) {
             Toast.makeText(this, "Houve um erro ao recuperar os dados", Toast.LENGTH_SHORT).show();
             Log.e("ERRO INTENT", e.getMessage());
             e.printStackTrace();
@@ -83,7 +82,6 @@ public class TelaTitulos extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        deletar_selecionados = false;
         titulos = tituloRepository.listar(editora.getId());
         populaTela();
     }
@@ -94,7 +92,7 @@ public class TelaTitulos extends AppCompatActivity {
         list_titulos.setAdapter(adapter);
     }
 
-    @OnItemSelected(R.id.list_titulos)
+    @OnItemClick(R.id.list_titulos)
     public void visualizarVolumes(int position) {
         Titulo titulo = titulos.get(position);
         Intent intent = new Intent(this, TelaTituloSelecionado.class);
@@ -107,45 +105,16 @@ public class TelaTitulos extends AppCompatActivity {
 
         final Titulo titulo = titulos.get(position);
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Editar Titulo");
-        alertDialog.setMessage(R.string.hint_txt_pesquisa_titulo);
-
-        final EditText input = new EditText(this);
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-
-        input.setLayoutParams(lp);
-        input.setText(titulo.getNome());
-        alertDialog.setView(input);
-
-        alertDialog.setPositiveButton("Salvar",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        titulo.setNome(input.getText().toString());
-
-                        boolean res = tituloRepository.atualizar(titulo);
-
-                        if (res)
-                            Toast.makeText(TelaTitulos.this, "Titulo atualizada com sucesso!", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(TelaTitulos.this, "Houve um erro ao salvar as alterações!", Toast.LENGTH_SHORT).show();
-
-                        titulos = tituloRepository.listar(editora.getId());
-                        populaTela();
-                    }
-                });
-        alertDialog.show();
-
+        Intent intent = new Intent(this, CrudTitulo.class);
+        intent.putExtra("editora", editora);
+        intent.putExtra("titulo", titulo);
+        startActivity(intent);
 
         return true;
     }
 
     @OnClick(R.id.fab_add)
-    public void dialogAdicionarTitulo() {
+    public void adicionarTitulo() {
         Intent intent = new Intent(this, CrudTitulo.class);
         intent.putExtra("editora", editora);
         startActivity(intent);
@@ -174,7 +143,6 @@ public class TelaTitulos extends AppCompatActivity {
         return true;
     }
 
-
     @SuppressLint("RestrictedApi")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -185,7 +153,7 @@ public class TelaTitulos extends AppCompatActivity {
 
         switch (id) {
             case SALVAR:
-                dialogAdicionarTitulo();
+                adicionarTitulo();
                 return true;
             case DELETAR:
                 if (deletar_selecionados) {
@@ -206,15 +174,11 @@ public class TelaTitulos extends AppCompatActivity {
                                     }
                                 }
 
-                                boolean res = tituloRepository.deletarLista(titulosParaExcluir);
-
-                                if (res) {
+                                if (tituloRepository.deletarLista(titulosParaExcluir))
                                     Toast.makeText(TelaTitulos.this, "Titulos deletadas com sucesso!", Toast.LENGTH_SHORT).show();
-                                } else {
+                                else
                                     Toast.makeText(TelaTitulos.this, "Houve um erro ao deletar as titulos!", Toast.LENGTH_SHORT).show();
-                                }
 
-                                deletar_selecionados = false;
                                 titulos = tituloRepository.listar(editora.getId());
                                 populaTela();
                             }
@@ -222,8 +186,8 @@ public class TelaTitulos extends AppCompatActivity {
                     });
                     dlg.show();
                 } else {
-                    TituloDeletarListAdapter adapter = new TituloDeletarListAdapter(this, this, titulos);
                     deletar_selecionados = true;
+                    TituloDeletarListAdapter adapter = new TituloDeletarListAdapter(this, this, titulos);
                     list_titulos.setAdapter(adapter);
                     fab_add.setVisibility(View.GONE);
                 }
@@ -232,8 +196,8 @@ public class TelaTitulos extends AppCompatActivity {
                 Toast.makeText(this, "Dê um clique longo em um item para editar!", Toast.LENGTH_LONG).show();
                 return true;
             case CANCELAR:
-                populaTela();
                 deletar_selecionados = false;
+                populaTela();
                 return true;
         }
 

@@ -67,9 +67,30 @@ public class TituloRepository {
         }
     }
 
+    public List<Titulo> pesquisar(String nome) {
+        try {
+            nome = "%" + nome + "%";
+            return new Pesquisar(0).execute(nome).get();
+        } catch (Exception e) {
+            Log.e("ERRO REPO TITULO", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public List<Titulo> listar(long id_editora) {
         try {
-            return new ListarTodos().execute(id_editora).get();
+            return new ListarTodos(id_editora).execute().get();
+        } catch (Exception e) {
+            Log.e("ERRO REPO TITULO", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Titulo> listar() {
+        try {
+            return new ListarTodos(0).execute().get();
         } catch (Exception e) {
             Log.e("ERRO REPO TITULO", e.getMessage());
             e.printStackTrace();
@@ -148,7 +169,11 @@ public class TituloRepository {
         @Override
         protected List<Titulo> doInBackground(String... strings) {
             try {
-                return AppDatabase.getAppDatabase(context).tituloDao().pesquisar(strings[0], id_editora);
+                if (id_editora == 0) {
+                    return AppDatabase.getAppDatabase(context).tituloDao().pesquisarTodos(strings[0]);
+                } else {
+                    return AppDatabase.getAppDatabase(context).tituloDao().pesquisar(strings[0], id_editora);
+                }
             } catch (Exception e) {
                 Log.e("ERRO ASYNC TITULO", e.getMessage());
                 e.printStackTrace();
@@ -158,12 +183,21 @@ public class TituloRepository {
     }
 
 
-    private class ListarTodos extends AsyncTask<Long, Void, List<Titulo>> {
+    private class ListarTodos extends AsyncTask<Void, Void, List<Titulo>> {
+        long id;
+
+        public ListarTodos(long id) {
+            this.id = id;
+        }
 
         @Override
-        protected List<Titulo> doInBackground(Long... longs) {
+        protected List<Titulo> doInBackground(Void... voids) {
             try {
-                return AppDatabase.getAppDatabase(context).tituloDao().getAllFromEditora(longs[0]);
+                if (id == 0) {
+                    return AppDatabase.getAppDatabase(context).tituloDao().getAll();
+                } else {
+                    return AppDatabase.getAppDatabase(context).tituloDao().getAllFromEditora(id);
+                }
             } catch (Exception e) {
                 Log.e("ERRO ASYNC TITULO", e.getMessage());
                 e.printStackTrace();

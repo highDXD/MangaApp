@@ -1,16 +1,20 @@
 package br.com.mangaapp.Model;
 
-import android.arch.persistence.room.*;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
 @Entity(tableName = "Volumes",
-        foreignKeys = {@ForeignKey( entity = Titulo.class,
-                                    parentColumns = "id",
-                                    childColumns = "id_titulo")},
-        indices = { @Index(value = {"id"}, unique = true),
-                    @Index(value = {"id_titulo"})})
+        foreignKeys = {@ForeignKey(entity = Titulo.class,
+                parentColumns = "id",
+                childColumns = "id_titulo")},
+        indices = {@Index(value = {"id"}, unique = true),
+                @Index(value = {"id_titulo"})})
 public class Volume implements Serializable {
 
     @NonNull
@@ -24,12 +28,10 @@ public class Volume implements Serializable {
     @ColumnInfo(name = "id_titulo")
     private long id_titulo;
 
-    public Volume() {
-    }
+    @NonNull
+    private String nomeDoVolume;
 
-    @Ignore
-    public Volume(@NonNull int num) {
-        this.num = num;
+    public Volume() {
     }
 
     @NonNull
@@ -57,5 +59,24 @@ public class Volume implements Serializable {
 
     public void setId_titulo(@NonNull long id_titulo) {
         this.id_titulo = id_titulo;
+    }
+
+    @NonNull
+    public String getNomeDoVolume() {
+        return nomeDoVolume;
+    }
+
+    public void setNomeDoVolume(@NonNull String nomeDoVolume) {
+        this.nomeDoVolume = nomeDoVolume;
+    }
+
+    @Override
+    public String toString() {
+        return "Volume{" +
+                "id=" + id +
+                ", num=" + num +
+                ", id_titulo=" + id_titulo +
+                ", nomeDoVolume='" + nomeDoVolume + '\'' +
+                '}';
     }
 }

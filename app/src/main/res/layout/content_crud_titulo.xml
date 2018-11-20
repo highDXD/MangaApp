@@ -56,6 +56,7 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
+                android:enabled="false"
                 android:hint="@string/hint_txt_pesquisa_editora"
                 android:inputType="textPersonName"
                 tools:targetApi="o" />
@@ -70,7 +71,6 @@
                 style="@style/AppTheme.lbl_black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=""
                 android:gravity="center"
                 android:text="@string/lbl_nome_titulo" />
 

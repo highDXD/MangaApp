@@ -11,11 +11,11 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 
 @Entity(tableName = "Titulos",
-        foreignKeys = {@ForeignKey( entity = Editora.class,
-                                    parentColumns = "id",
-                                    childColumns = "id_editora")},
-        indices = { @Index(value = {"id"}, unique = true),
-                    @Index(value = {"id_editora"})})
+        foreignKeys = {@ForeignKey(entity = Editora.class,
+                parentColumns = "id",
+                childColumns = "id_editora")},
+        indices = {@Index(value = {"id"}, unique = true),
+                @Index(value = {"id_editora"})})
 public class Titulo implements Serializable {
 
     @NonNull
@@ -32,16 +32,20 @@ public class Titulo implements Serializable {
     @NonNull
     private String tipoDeTitulo;
 
+    @NonNull
+    private String estadoDoTitulo;
+
     private int numTotalDeVolumes;
 
     public Titulo() {
     }
 
     @Ignore
-    public Titulo(@NonNull long id_editora, @NonNull String nome, @NonNull String tipoDeTitulo, int numTotalDeVolumes) {
+    public Titulo(@NonNull long id_editora, @NonNull String nome, @NonNull String tipoDeTitulo, @NonNull String estadoDoTitulo, int numTotalDeVolumes) {
         this.id_editora = id_editora;
         this.nome = nome;
         this.tipoDeTitulo = tipoDeTitulo;
+        this.estadoDoTitulo = estadoDoTitulo;
         this.numTotalDeVolumes = numTotalDeVolumes;
     }
 
@@ -81,6 +85,15 @@ public class Titulo implements Serializable {
         this.tipoDeTitulo = tipoDeTitulo;
     }
 
+    @NonNull
+    public String getEstadoDoTitulo() {
+        return estadoDoTitulo;
+    }
+
+    public void setEstadoDoTitulo(@NonNull String estadoDoTitulo) {
+        this.estadoDoTitulo = estadoDoTitulo;
+    }
+
     public int getNumTotalDeVolumes() {
         return numTotalDeVolumes;
     }
@@ -89,7 +102,6 @@ public class Titulo implements Serializable {
         this.numTotalDeVolumes = numTotalDeVolumes;
     }
 
-
     @Override
     public String toString() {
         return "Titulo{" +
@@ -97,6 +109,7 @@ public class Titulo implements Serializable {
                 ", id_editora=" + id_editora +
                 ", nome='" + nome + '\'' +
                 ", tipoDeTitulo='" + tipoDeTitulo + '\'' +
+                ", estadoDoTitulo='" + estadoDoTitulo + '\'' +
                 ", numTotalDeVolumes=" + numTotalDeVolumes +
                 '}';
     }

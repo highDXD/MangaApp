@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8abc606b41db84569fe59f9b05fa9b27",
+    "identityHash": "ed0da34c7aaf71871dbb261f4198d071",
     "entities": [
       {
         "tableName": "Editoras",
@@ -41,7 +41,7 @@
       },
       {
         "tableName": "Titulos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id_editora` INTEGER NOT NULL, `nome` TEXT NOT NULL, `tipoDeTitulo` TEXT NOT NULL, FOREIGN KEY(`id_editora`) REFERENCES `Editoras`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id_editora` INTEGER NOT NULL, `nome` TEXT NOT NULL, `tipoDeTitulo` TEXT NOT NULL, `estadoDoTitulo` TEXT NOT NULL, `numTotalDeVolumes` INTEGER NOT NULL, FOREIGN KEY(`id_editora`) REFERENCES `Editoras`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -65,6 +65,18 @@
             "fieldPath": "tipoDeTitulo",
             "columnName": "tipoDeTitulo",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estadoDoTitulo",
+            "columnName": "estadoDoTitulo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numTotalDeVolumes",
+            "columnName": "numTotalDeVolumes",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -108,7 +120,7 @@
       },
       {
         "tableName": "Volumes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `num` INTEGER NOT NULL, `id_titulo` INTEGER NOT NULL, FOREIGN KEY(`id_titulo`) REFERENCES `Titulos`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `num` INTEGER NOT NULL, `id_titulo` INTEGER NOT NULL, `nomeDoVolume` TEXT NOT NULL, FOREIGN KEY(`id_titulo`) REFERENCES `Titulos`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -126,6 +138,12 @@
             "fieldPath": "id_titulo",
             "columnName": "id_titulo",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nomeDoVolume",
+            "columnName": "nomeDoVolume",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -170,7 +188,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8abc606b41db84569fe59f9b05fa9b27\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ed0da34c7aaf71871dbb261f4198d071\")"
     ]
   }
 }

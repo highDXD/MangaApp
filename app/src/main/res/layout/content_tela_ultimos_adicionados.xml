@@ -8,8 +8,8 @@
     tools:context=".Interface.TelaUltimosAdicionados"
     tools:showIn="@layout/activity_tela_ultimos_adicionados">
 
-    <ListView
-        android:id="@+id/list_editoras"
+    <TableLayout
+        android:id="@+id/tableLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,7 +17,45 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/txt_nome_pesquisa"
-        app:layout_constraintStart_toStartOf="@+id/txt_nome_pesquisa"
-        app:layout_constraintTop_toBottomOf="@+id/txt_nome_pesquisa"></ListView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/lbl_qtde_de_titulos"
+                style="@style/AppTheme.lbl_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/lbl_qtde_de_volumes" />
+
+            <Spinner
+                android:id="@+id/spin_qtde_de_volumes"
+                style="@style/AppTheme.txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:entries="@array/qtde_volumes" />
+        </TableRow>
+
+    </TableLayout>
+
+    <ListView
+        android:id="@+id/list_volumes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tableLayout2"
+        app:layout_constraintStart_toStartOf="@+id/tableLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout2"></ListView>
 </android.support.constraint.ConstraintLayout>

@@ -18,11 +18,17 @@ public interface VolumeDao {
     @Delete
     void deletar (Volume volume);
 
+    @Delete
+    void deletarLista (List<Volume> volumes);
+
     @Query("SELECT * FROM Volumes WHERE id_titulo = :id_titulo ORDER BY num ASC")
     List<Volume> getAllFromTitulo(long id_titulo);
 
     @Query("SELECT COUNT(*) FROM Volumes WHERE id_titulo = :id_titulo")
     int countNumVolumesFromTitulo(long id_titulo);
+
+    @Query("SELECT * FROM Volumes ORDER BY id DESC LIMIT :qtde")
+    List<Volume> getUltimos(int qtde);
 
     @Query("SELECT * FROM Volumes WHERE id_titulo = :id_editora AND num LIKE :num")
     List<Volume> pesquisar(int num, long id_editora);

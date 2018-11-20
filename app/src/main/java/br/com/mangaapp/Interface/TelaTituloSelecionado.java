@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +20,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.mangaapp.Adapter.TituloDeletarListAdapter;
-import br.com.mangaapp.Adapter.TituloListAdapter;
+import br.com.mangaapp.Adapter.VolumeDeletarListAdapter;
+import br.com.mangaapp.Adapter.VolumeListAdapter;
 import br.com.mangaapp.Model.Titulo;
+import br.com.mangaapp.Model.Volume;
 import br.com.mangaapp.R;
-import br.com.mangaapp.Repository.TituloRepository;
+import br.com.mangaapp.Repository.VolumeRepository;
+import br.com.mangaapp.Util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,17 +39,19 @@ public class TelaTituloSelecionado extends AppCompatActivity {
     @BindView(R.id.fab_add)
     FloatingActionButton fab_add;
 
-    @BindView(R.id.list_titulos)
-    ListView list_titulos;
+    @BindView(R.id.list_volumes)
+    ListView list_volumes;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.txt_nome_pesquisa)
-    EditText txt_nome_pesquisa;
+    @BindView(R.id.txt_volume_pesquisa)
+    EditText txt_volume_pesquisa;
 
-    private TituloRepository tituloRepository;
-    private List<Titulo> titulos;
+    private Titulo titulo;
+
+    private VolumeRepository volumeRepository;
+    private List<Volume> volumes;
 
     private boolean deletar_selecionados;
 
@@ -60,43 +65,45 @@ public class TelaTituloSelecionado extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_titulo_selecionado);
         ButterKnife.bind(this);
-/*
-        toolbar.setTitle(R.string.lbl_btn_titulos);*/
+
+        try {
+            titulo = (Titulo) getIntent().getSerializableExtra("titulo");
+        } catch (Exception e) {
+            Toast.makeText(this, "Erro ao recuperar dados", Toast.LENGTH_SHORT).show();
+            Log.e("ERRO INTENT", e.getMessage());
+            e.printStackTrace();
+            finish();
+        }
+
+        toolbar.setTitle(titulo.getNome());
         setSupportActionBar(toolbar);
 
-        tituloRepository = new TituloRepository(this);
+        volumeRepository = new VolumeRepository(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         deletar_selecionados = false;
-        /*titulos = tituloRepository.listar();*/
+        volumes = volumeRepository.listar(titulo.getId());
         populaTela();
     }
 
 
     private void populaTela() {
-        TituloListAdapter adapter = new TituloListAdapter(this, this, titulos);
-        list_titulos.setAdapter(adapter);
+        Log.e("VOLUMES", volumes.toString());
+
+        VolumeListAdapter adapter = new VolumeListAdapter(this, this, volumes);
+        list_volumes.setAdapter(adapter);
     }
 
-    @OnItemSelected(R.id.list_titulos)
-    public void chamarTelaDeTitulos(int position) {
-        Titulo titulo = titulos.get(position);
-        Intent intent = new Intent(this, TelaTitulos.class);
-        intent.putExtra("titulo", titulo);
-        startActivity(intent);
-    }
-
-    @OnItemLongClick(R.id.list_titulos)
-    public boolean editarTitulo(int position) {
-
-        final Titulo titulo = titulos.get(position);
+    @OnItemSelected(R.id.list_volumes)
+    public void chamarTelaDeVolumes(int position) {
+        final Volume volume = volumes.get(position);
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Editar Titulo");
-        alertDialog.setMessage(R.string.hint_txt_pesquisa_titulo);
+        alertDialog.setTitle("Editar Volume");
+        alertDialog.setMessage("Número do volume: ");
 
         final EditText input = new EditText(this);
 
@@ -105,37 +112,45 @@ public class TelaTituloSelecionado extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
         input.setLayoutParams(lp);
-        input.setText(titulo.getNome());
+        input.setText("" + volume.getNum());
         alertDialog.setView(input);
 
         alertDialog.setPositiveButton("Salvar",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        titulo.setNome(input.getText().toString());
+                        String strNum = input.getText().toString();
 
-                        boolean res = tituloRepository.atualizar(titulo);
+                        if (Utils.isCampoVazio(strNum)) {
+                            Toast.makeText(TelaTituloSelecionado.this, "Campo vazio!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            volume.setNum(Integer.parseInt(strNum));
+                            volume.setNomeDoVolume(titulo.getNome() + " - " + strNum);
 
-                        if (res)
-                            Toast.makeText(TelaTituloSelecionado.this, "Titulo atualizada com sucesso!", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao salvar as alterações!", Toast.LENGTH_SHORT).show();
+                            if (volumeRepository.atualizar(volume)) {
 
-                        /*titulos = tituloRepository.listar();*/
-                        populaTela();
+                                Toast.makeText(TelaTituloSelecionado.this, "Volume atualizado com sucesso!", Toast.LENGTH_SHORT).show();
+
+                                volumes = volumeRepository.listar(titulo.getId());
+                                populaTela();
+                            } else
+                                Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao salvar as alterações!", Toast.LENGTH_SHORT).show();
+
+
+                        }
+
+
                     }
                 });
         alertDialog.show();
 
-
-        return true;
     }
 
     @OnClick(R.id.fab_add)
-    public void dialogAdicionarTitulo() {
+    public void dialogAdicionarVolume() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Nova titulo");
-        alertDialog.setMessage("Nome da titulo:");
+        alertDialog.setTitle("Novo volume");
+        alertDialog.setMessage("Número do volume:");
         final EditText input = new EditText(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -147,32 +162,39 @@ public class TelaTituloSelecionado extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Titulo titulo = new Titulo();
-                        titulo.setNome(input.getText().toString().trim());
+                        Volume volume = new Volume();
 
-                        boolean res = tituloRepository.salvar(titulo);
+                        String strNumVolume = input.getText().toString().trim();
 
-                        if (res) {
-                            Toast.makeText(TelaTituloSelecionado.this, "Titulo salva com sucesso!", Toast.LENGTH_SHORT).show();
-                            populaTela();
+                        if (Utils.isCampoVazio(strNumVolume)) {
+                            Toast.makeText(TelaTituloSelecionado.this, "Campo vazio!", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao salvar a titulo!", Toast.LENGTH_SHORT).show();
+                            volume.setNum(Integer.parseInt(strNumVolume));
+                            volume.setNomeDoVolume(titulo.getNome() + " - " + strNumVolume);
+                            volume.setId_titulo(titulo.getId());
+
+                            if (volumeRepository.salvar(volume)) {
+                                Toast.makeText(TelaTituloSelecionado.this, "Volume salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                                volumes = volumeRepository.listar(titulo.getId());
+                                populaTela();
+                            } else {
+                                Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao salvar o volume!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
-
                 });
         alertDialog.setNegativeButton("Cancelar", null);
         alertDialog.show();
     }
 
-    @OnTextChanged(R.id.txt_nome_pesquisa)
+    @OnTextChanged(R.id.txt_volume_pesquisa)
     public void pesquisa() {
-        String nome = txt_nome_pesquisa.getText().toString().trim();
-        /*if (nome.equals("")) {
-            titulos = tituloRepository.listar();
+        String volume = txt_volume_pesquisa.getText().toString().trim();
+        if (volume.equals("")) {
+            volumes = volumeRepository.listar(titulo.getId());
         } else {
-            titulos = tituloRepository.pesquisar(nome);
-        }*/
+            volumes = volumeRepository.pesquisar(titulo.getId(), Integer.parseInt(volume));
+        }
         populaTela();
     }
 
@@ -180,7 +202,7 @@ public class TelaTituloSelecionado extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        menu.add(0, SALVAR, 0, "Nova Titulo");
+        menu.add(0, SALVAR, 0, "Novo Volume");
         menu.add(0, DELETAR, 0, "Deletar");
         menu.add(0, ATUALIZAR, 0, "Editar");
         menu.add(0, CANCELAR, 0, "Cancelar");
@@ -199,7 +221,7 @@ public class TelaTituloSelecionado extends AppCompatActivity {
 
         switch (id) {
             case SALVAR:
-                dialogAdicionarTitulo();
+                dialogAdicionarVolume();
                 return true;
             case DELETAR:
                 if (deletar_selecionados) {
@@ -209,44 +231,46 @@ public class TelaTituloSelecionado extends AppCompatActivity {
                     dlg.setPositiveButton("Deletar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (list_titulos != null) {
-                                TituloDeletarListAdapter adapter = (TituloDeletarListAdapter) list_titulos.getAdapter();
+                            if (list_volumes != null) {
+                                VolumeDeletarListAdapter adapter = (VolumeDeletarListAdapter) list_volumes.getAdapter();
 
-                                List<Titulo> titulosParaExcluir = new ArrayList<>();
+                                List<Volume> volumesParaExcluir = new ArrayList<>();
 
                                 for (int i = 0; i < adapter.getCount(); i++) {
                                     if (adapter.isSelecionado(i)) {
-                                        titulosParaExcluir.add(titulos.get(i));
+                                        volumesParaExcluir.add(volumes.get(i));
                                     }
                                 }
 
-                                boolean res = tituloRepository.deletarLista(titulosParaExcluir);
+                                boolean res = volumeRepository.deletarLista(volumesParaExcluir);
 
                                 if (res) {
-                                    Toast.makeText(TelaTituloSelecionado.this, "Titulos deletadas com sucesso!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(TelaTituloSelecionado.this, "Volumes deletados com sucesso!", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao deletar as titulos!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(TelaTituloSelecionado.this, "Houve um erro ao deletar os volumes!", Toast.LENGTH_SHORT).show();
                                 }
 
+                                fab_add.setVisibility(View.VISIBLE);
                                 deletar_selecionados = false;
-                                /*titulos = tituloRepository.listar();*/
+                                volumes = volumeRepository.listar(titulo.getId());
                                 populaTela();
                             }
                         }
                     });
                     dlg.show();
                 } else {
-                    TituloDeletarListAdapter adapter = new TituloDeletarListAdapter(this, this, titulos);
+                    VolumeDeletarListAdapter adapter = new VolumeDeletarListAdapter(this, this, volumes);
                     deletar_selecionados = true;
-                    list_titulos.setAdapter(adapter);
+                    list_volumes.setAdapter(adapter);
                     fab_add.setVisibility(View.GONE);
                 }
                 return true;
             case ATUALIZAR:
-                Toast.makeText(this, "Dê um clique longo em um item para editar!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Dê um clique em um item para editar!", Toast.LENGTH_LONG).show();
                 return true;
             case CANCELAR:
                 populaTela();
+                fab_add.setVisibility(View.VISIBLE);
                 deletar_selecionados = false;
                 return true;
         }

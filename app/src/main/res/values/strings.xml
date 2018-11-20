@@ -14,10 +14,18 @@
     <string name="lbl_editora">Editora:</string>
     <string name="lbl_nome_titulo">Nome:</string>
     <string name="lbl_total_de_volumes">Total de volumes:</string>
-    <string name="hint_total_de_volumes">Ex: 42</string>
+    <string name="hint_total_de_volumes">0 como padrão</string>
     <string name="lbl_tipo_de_titulo">Tipo de título:</string>
     <string name="lbl_estado_do_titulo">Estado:</string>
     <string name="lbl_caracteristicas">Dados do título</string>
+    <string name="hint_txt_pesquisa_volume">Número do volume</string>
+
+    <array name="qtde_volumes">
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+    </array>
 
     <array name="tipos_de_titulo">
         <item>HQ</item>
@@ -33,4 +41,6 @@
         <item>Finalizado</item>
         <item>Cancelado</item>
     </array>
+    <string name="title_activity_tela_todos_os_titulos">TelaTodosOsTitulos</string>
+    <string name="lbl_qtde_de_volumes">Quantidade:</string>
 </resources>

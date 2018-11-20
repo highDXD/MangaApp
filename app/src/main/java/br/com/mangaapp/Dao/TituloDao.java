@@ -20,6 +20,12 @@ public interface TituloDao {
     @Delete
     void deletarLista (List<Titulo> titulos);
 
+    @Query("SELECT * FROM Titulos ORDER BY nome ASC")
+    List<Titulo> getAll();
+
+    @Query("SELECT * FROM Titulos WHERE nome LIKE :nome ORDER BY nome ASC")
+    List<Titulo> pesquisarTodos(String nome);
+
     @Query("SELECT * FROM Titulos WHERE id_editora = :id_editora ORDER BY nome ASC")
     List<Titulo> getAllFromEditora(long id_editora);
 

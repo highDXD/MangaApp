@@ -54,7 +54,7 @@ public class VolumeListAdapter extends BaseAdapter {
         TextView nome = (TextView) vi.findViewById(R.id.txtTitle); // title
         ImageView icone = (ImageView) vi.findViewById(R.id.imgIcon); // thumb image
 
-        nome.setText(volumes.get(position).getNum());
+        nome.setText(volumes.get(position).getNomeDoVolume());
         icone.setImageResource(R.drawable.ic_right_arrow);
         return vi;
     }

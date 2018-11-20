@@ -156,6 +156,7 @@ public class TelaEditoras extends AppCompatActivity {
 
                         if (res) {
                             Toast.makeText(TelaEditoras.this, "Editora salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            editoras = editoraRepository.listar();
                             populaTela();
                         } else {
                             Toast.makeText(TelaEditoras.this, "Houve um erro ao salvar a editora!", Toast.LENGTH_SHORT).show();

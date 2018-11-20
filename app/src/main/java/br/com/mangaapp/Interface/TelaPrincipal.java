@@ -34,7 +34,7 @@ public class TelaPrincipal extends AppCompatActivity {
 
     @OnClick(R.id.btn_todos)
     public void telaTodosOsTitulos(){
-        Intent intent = new Intent(this, TelaTitulos.class);
+        Intent intent = new Intent(this, TelaTodosOsTitulos.class);
         startActivity(intent);
     }
 

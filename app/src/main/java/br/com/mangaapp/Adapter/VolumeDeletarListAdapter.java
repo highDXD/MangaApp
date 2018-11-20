@@ -68,7 +68,7 @@ public class VolumeDeletarListAdapter extends BaseAdapter {
             }
         });
 
-        nome.setText(volumes.get(position).getNum());
+        nome.setText("Volume " + volumes.get(position).getNum());
         return vi;
     }
 }

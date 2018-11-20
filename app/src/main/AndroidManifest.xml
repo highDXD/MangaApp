@@ -48,6 +48,10 @@
         <activity
             android:name=".Interface.CrudTitulo"
             android:label="@string/title_activity_crud_titulo"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Interface.TelaTodosOsTitulos"
+            android:label="@string/title_activity_tela_todos_os_titulos"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
