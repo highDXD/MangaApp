@@ -1,0 +1,29 @@
+package br.com.mangaapp.Dao;
+
+import android.arch.persistence.room.*;
+
+import java.util.List;
+
+import br.com.mangaapp.Model.Volume;
+
+
+@Dao
+public interface VolumeDao {
+    @Insert
+    void salvar (Volume volume);
+
+    @Update
+    void atualizar (Volume volume);
+
+    @Delete
+    void deletar (Volume volume);
+
+    @Query("SELECT * FROM Volumes WHERE id_titulo = :id_titulo ORDER BY num ASC")
+    List<Volume> getAllFromTitulo(long id_titulo);
+
+    @Query("SELECT COUNT(*) FROM Volumes WHERE id_titulo = :id_titulo")
+    int countNumVolumesFromTitulo(long id_titulo);
+
+    @Query("SELECT * FROM Volumes WHERE id_titulo = :id_editora AND num LIKE :num")
+    List<Volume> pesquisar(int num, long id_editora);
+}

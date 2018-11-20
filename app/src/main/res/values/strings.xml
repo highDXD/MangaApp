@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">MangaApp</string>
+    <string name="title_activity_tela_principal">TelaPrincipal</string>
+    <string name="hint_txt_pesquisa_editora">Nome da editora</string>
+    <string name="title_activity_tela_editoras">TelaEditoras</string>
+    <string name="title_activity_tela_titulos">TelaTitulos</string>
+    <string name="title_activity_tela_titulo_selecionado">TelaTituloSelecionado</string>
+    <string name="title_activity_tela_ultimos_adicionados">TelaUltimosAdicionados</string>
+    <string name="lbl_btn_editoras">Editoras</string>
+    <string name="lbl_btn_todos">Todos os títulos</string>
+    <string name="lbl_btn_ultimos">Últimos adicionados</string>
+    <string name="hint_txt_pesquisa_titulo">Nome do título</string>
+    <string name="title_activity_crud_titulo">CrudTitulo</string>
+    <string name="lbl_editora">Editora:</string>
+    <string name="lbl_nome_titulo">Nome:</string>
+    <string name="lbl_total_de_volumes">Total de volumes:</string>
+    <string name="hint_total_de_volumes">Ex: 42</string>
+    <string name="lbl_tipo_de_titulo">Tipo de título:</string>
+    <string name="lbl_estado_do_titulo">Estado:</string>
+    <string name="lbl_caracteristicas">Dados do título</string>
+
+    <array name="tipos_de_titulo">
+        <item>HQ</item>
+        <item>Mangá</item>
+        <item>Light Novel</item>
+        <item>Graphic Novel</item>
+    </array>
+
+
+    <array name="estados_do_titulo">
+        <item>Anunciado</item>
+        <item>Em andamento</item>
+        <item>Finalizado</item>
+        <item>Cancelado</item>
+    </array>
 </resources>
